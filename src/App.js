@@ -24,25 +24,73 @@ function App() {
 
   const firstLink = useRef()
   const secondLink = useRef()
+  // const [rates, setRates] = useState({
+  //   "UAH-UAH": 1,
+  //   "UAH-USD": 1/40,
+  //   "UAH-EUR": 1/39,
+  //   "USD-USD": 1,
+  //   "USD-UAH": 40,
+  //   "USD-EUR": 0.9,
+  //   "EUR-EUR": 1,
+  //   "EUR-UAH": 39,
+  //   "EUR-USD": 1.1,
+  //   "null-null": 0
+  // })
+
   const [rates, setRates] = useState({
     "UAH-UAH": 1,
-    "UAH-USD": 1/40,
-    "UAH-EUR": 1/39,
+    "UAH-USD": null,
+    "UAH-EUR": null,
     "USD-USD": 1,
-    "USD-UAH": 40,
-    "USD-EUR": 0.9,
+    "USD-UAH": null,
+    "USD-EUR": null,
     "EUR-EUR": 1,
-    "EUR-UAH": 39,
-    "EUR-USD": 1.1,
-    "null-null": 0
+    "EUR-UAH": null,
+    "EUR-USD": null
   })
 
-  useEffect(()=>{
-    firstLink.current.value = firstInput
-  }, [firstInput])
-  useEffect(()=>{
-    secondLink.current.value = secondInput
-  }, [secondInput])
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [response1, response2] = await Promise.all([
+          fetch(
+            "https://api.apilayer.com/exchangerates_data/latest?symbols=UAH,EUR&base=USD",
+            requestOptions
+          ).then((response) => response.json()),
+          fetch(
+            "https://api.apilayer.com/exchangerates_data/latest?symbols=UAH&base=EUR",
+            requestOptions
+          ).then((response) => response.json()),
+        ]);
+  
+        const updatedRates = {
+          ...rates,
+          "UAH-USD": 1 / response1.rates.UAH,
+          "USD-UAH": response1.rates.UAH,
+          "USD-EUR": response1.rates.EUR,
+          "EUR-USD": 1 / response1.rates.EUR,
+          "UAH-EUR": 1 / response2.rates.UAH,
+          "EUR-UAH": response2.rates.UAH,
+        };
+  
+        setRates(updatedRates);
+        setIsLoad(true);
+      } catch (error) {
+        setIsLoad(false);
+        console.log(error);
+      }
+    }
+  
+    fetchData();
+  }, []);
+
+
+  // useEffect(()=>{
+  //   firstLink.current.value = firstInput
+  // }, [firstInput])
+  // useEffect(()=>{
+  //   secondLink.current.value = secondInput
+  // }, [secondInput])
   useEffect(()=>{
     getRate()
   }, [firstCurrency])
