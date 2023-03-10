@@ -11,7 +11,7 @@ export const InputType = (props) => {
     useEffect(()=>{
       props.finishValue(props.valueInput)
     },
-    [props.currency, props.valueInput])
+    [props.currency])
     function onChange(e){ 
       props.finishValue(e)
       props.setValueInput(e);

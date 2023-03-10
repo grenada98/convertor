@@ -84,13 +84,6 @@ function App() {
     fetchData();
   }, []);
 
-
-  // useEffect(()=>{
-  //   firstLink.current.value = firstInput
-  // }, [firstInput])
-  // useEffect(()=>{
-  //   secondLink.current.value = secondInput
-  // }, [secondInput])
   useEffect(()=>{
     getRate()
   }, [firstCurrency])
@@ -110,11 +103,11 @@ function App() {
   }
   
   function ConverterSecond(e){ //изменяем значение второго инпута при вводе в первый
-    if(activeInputs) {setSecondInput(e * getRate()); return e * getRate()}
+    if(activeInputs) {setSecondInput(e * getRate())}
   }
   
   function ConverterFirst(e){
-    if(activeInputs) {setFirstInput(e/getRate()); return e/getRate()}
+    if(activeInputs) {setFirstInput(e/getRate())}
   }
  
   return (
