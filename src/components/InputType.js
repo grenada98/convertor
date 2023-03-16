@@ -1,27 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 
-const options = [
-    { value: 'UAH', label: 'Гривні' },
-    { value: 'USD', label: 'Долари' },
-    { value: 'EUR', label: 'Євро' },
-  ];
 
 export const InputType = (props) => {
+  const [options, setOptions] = useState([]);
+  useEffect(()=>{
+    if(props.rates){
+      const keysData = Object.keys(props.rates);
+      const selectData = keysData.map(item=>{
+        return {value: item, label: item}
+      })
+      setOptions([...selectData])
+    }
+  }, [props.rates])
     useEffect(()=>{
       props.finishValue(props.valueInput)
-    },
-    [props.currency])
+    }, [props.currency])
+
     function onChange(e){ 
       props.finishValue(e)
       props.setValueInput(e);
     }
-    function onChangeSelect(e){ //для установки валют
+
+    function onChangeSelect(e){
       props.setCurrency(e.value)
     }
+
     return(
         <div className='convertor__type'>
-            <input ref={props.link} className={props.activeInput? 'convertor__input active':'convertor__input'} 
+            <input className={props.activeInput? 'convertor__input active':'convertor__input'} 
                 placeholder='Сума' 
                 value={props.valueInput} 
                 onChange={e=>onChange(e.target.value)} 
